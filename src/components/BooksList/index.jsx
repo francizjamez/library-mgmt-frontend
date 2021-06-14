@@ -1,5 +1,6 @@
 import {
   Button,
+  CircularProgress,
   Container,
   Dialog,
   DialogActions,
@@ -36,41 +37,36 @@ export default function BooksList() {
   const [books, setBooks] = useState([]);
   const [bookToDelete, setBookToDelete] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   useEffect(() => {
-    async function getBooksData() {
-      let booksData = await axios.get("http://localhost:3001/books");
-      setBooks(booksData.data);
-    }
     getBooksData();
   }, []);
   return (
     <>
-      <Container className={`${classes.flex1} ${classes.relative}`}>
-        <Paper elevation={2}>
-          <Typography className={classes.padding1} variant="h2">
-            Books List
-          </Typography>
-          <Divider />
-          <List>
-            {books.map((book) => {
-              const { title, authors } = book;
-              return (
-                <ListItem button key={title} className={classes.book}>
-                  <ListItemIcon>{<BookIcon />}</ListItemIcon>
-                  <ListItemText primary={title} secondary={authors.join(",")} />
-                  <IconButton onClick={() => handleDelete(book)}>
-                    {<DeleteIcon />}
-                  </IconButton>
-                </ListItem>
-              );
-            })}
-          </List>
-        </Paper>
-        <Fab color="primary" aria-label="add" className={classes.bottomRight}>
-          <AddIcon />
-        </Fab>
-      </Container>
+      <Paper elevation={2}>
+        <Typography className={classes.padding1} variant="h2">
+          Books List
+        </Typography>
+        <Divider />
+        <List>
+          {books.map((book) => {
+            const { title, authors } = book;
+            return (
+              <ListItem button key={title} className={classes.book}>
+                <ListItemIcon>{<BookIcon />}</ListItemIcon>
+                <ListItemText primary={title} secondary={authors.join(",")} />
+                <IconButton onClick={() => handleDelete(book)}>
+                  {<DeleteIcon />}
+                </IconButton>
+              </ListItem>
+            );
+          })}
+        </List>
+      </Paper>
+      <Fab color="primary" aria-label="add" className={classes.bottomRight}>
+        <AddIcon />
+      </Fab>
 
       <Dialog
         open={showDialog}
@@ -79,9 +75,13 @@ export default function BooksList() {
       >
         <DialogTitle>Delete</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Arou you sure you want to delete <b>{bookToDelete?.title}</b>
-          </DialogContentText>
+          {deleteLoading ? (
+            <CircularProgress />
+          ) : (
+            <DialogContentText>
+              Arou you sure you want to delete <b>{bookToDelete?.title}</b>
+            </DialogContentText>
+          )}
         </DialogContent>
         <DialogActions>
           <Button
@@ -91,7 +91,9 @@ export default function BooksList() {
           >
             Cancel
           </Button>
-          <Button color="primary">Delete</Button>
+          <Button color="primary" onClick={() => deleteBook()}>
+            Delete
+          </Button>
         </DialogActions>
       </Dialog>
     </>
@@ -100,5 +102,21 @@ export default function BooksList() {
   function handleDelete(book) {
     setShowDialog(true);
     setBookToDelete(book);
+  }
+
+  async function deleteBook() {
+    setDeleteLoading(true);
+    const res = await axios.delete(
+      "http://localhost:3001/books/" + bookToDelete._id
+    );
+    console.log(res);
+    await getBooksData();
+    setDeleteLoading(false);
+    setShowDialog(false);
+  }
+
+  async function getBooksData() {
+    let booksData = await axios.get("http://localhost:3001/books");
+    setBooks(booksData.data);
   }
 }
