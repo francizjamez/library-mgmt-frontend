@@ -6,6 +6,9 @@ const useStyles = makeStyles({
   flexCol: { display: "flex", flexDirection: "column" },
   gap1: { gap: "1rem" },
   selfCenter: { alignSelf: "center" },
+  gap2: { gap: "2rem" },
+  p2: { padding: "2rem" },
+  flex1: { flex: 1 },
 });
 
 export default useStyles;

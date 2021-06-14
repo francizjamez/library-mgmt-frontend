@@ -1,7 +1,6 @@
 import {
   Button,
   CircularProgress,
-  Container,
   Dialog,
   DialogActions,
   DialogContent,
@@ -106,10 +105,7 @@ export default function BooksList() {
 
   async function deleteBook() {
     setDeleteLoading(true);
-    const res = await axios.delete(
-      "http://localhost:3001/books/" + bookToDelete._id
-    );
-    console.log(res);
+    await axios.delete("http://localhost:3001/books/" + bookToDelete._id);
     await getBooksData();
     setDeleteLoading(false);
     setShowDialog(false);

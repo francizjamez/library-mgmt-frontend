@@ -7,7 +7,6 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  makeStyles,
   Toolbar,
   Typography,
 } from "@material-ui/core";
@@ -20,18 +19,19 @@ import {
 } from "@material-ui/icons/";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import useStyles from "../styles";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    flexGrow: 1,
-  },
-}));
+// const useStyles = makeStyles((theme) => ({
+//   root: {
+//     flexGrow: 1,
+//   },
+//   menuButton: {
+//     marginRight: theme.spacing(2),
+//   },
+//   title: {
+//     flexGrow: 1,
+//   },
+// }));
 
 const navigationList = [
   { name: "Books", icon: <BookIcon />, link: "/books" },
@@ -41,25 +41,32 @@ const navigationList = [
 ];
 
 export default function Nav() {
-  const classes = useStyles();
   const [drawerOpen, setDrawerOpen] = useState();
+  const sty = useStyles();
   return (
     <>
       <AppBar position="static">
         <Toolbar>
           <IconButton
             edge="start"
-            className={classes.menuButton}
             color="inherit"
             aria-label="menu"
             onClick={toggleDrawer}
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" className={classes.title}>
+          <Typography variant="h6" className={`${sty.flex1}`}>
             News
           </Typography>
-          <Button color="inherit">Login</Button>
+
+          <div className={`${sty.flexRow} ${sty.gap1}`}>
+            <Button variant="contained" color="secondary">
+              <Link to="/login">Log in</Link>
+            </Button>
+            <Button color="secondary" variant="contained">
+              <Link to="/signup">Sign up</Link>
+            </Button>
+          </div>
         </Toolbar>
       </AppBar>
 

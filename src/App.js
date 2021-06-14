@@ -1,6 +1,7 @@
 import { Container, CssBaseline, makeStyles } from "@material-ui/core";
 import { Route, Switch } from "react-router";
 import BooksList from "./components/BooksList";
+import Login from "./components/Login";
 import Nav from "./components/Nav";
 import Signup from "./components/Signup";
 
@@ -24,9 +25,13 @@ function App() {
       <Switch>
         <Route exact path="/" />
 
-        <Container className={`${classes.flex1} ${classes.relative}`}>
+        <Container
+          className={`${classes.flex1} ${classes.relative}`}
+          maxWidth="sm"
+        >
           <Route path="/books" component={BooksList} />
           <Route path="/signup" component={Signup} />
+          <Route path="/login" component={Login} />
         </Container>
       </Switch>
     </div>
