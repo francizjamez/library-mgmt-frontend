@@ -55,10 +55,10 @@ export default function Login() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-
     try {
       const res = await axios.post("http://localhost:3001/auth/login", data);
-      console.log(res.status);
+      window.localStorage.setItem("token", res.data.access_token);
+      // console.log(res);
     } catch (error) {
       alert(error.response.data.err);
     }

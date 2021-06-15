@@ -112,7 +112,8 @@ export default function BooksList() {
   }
 
   async function getBooksData() {
-    let booksData = await axios.get("http://localhost:3001/books");
+    let booksData = await axios.get("/books");
+    console.log(booksData);
     setBooks(booksData.data);
   }
 }
