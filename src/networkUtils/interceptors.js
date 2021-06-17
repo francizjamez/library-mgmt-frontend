@@ -7,12 +7,10 @@ const history = createBrowserHistory();
 axios.defaults.baseURL = "http://localhost:3001/";
 
 axios.interceptors.request.use(
-  (req) => {
+  async (req) => {
     const token = localStorage.getItem("token");
     if (token) {
       req.headers.Authorization = `Bearer ${token}`;
-    } else {
-      alert("TOKEN NOT FOUND");
     }
     return req;
   },
@@ -24,21 +22,28 @@ axios.interceptors.request.use(
 
 axios.interceptors.response.use(
   (res) => {
-    // const token = localStorage.getItem("token");
-    // //   if (token) {
-    // //     req.headers.Authorization = `Bearer ${token}`;
-    // //   } else {
-    // //       history.push(
-    // //           "/login"
-    // //       )
-    // //     alert("TOKEN NOT FOUND");
-    // //   }
-    // // history.push("/login");
     return res;
   },
-  (err) => {
-    console.log(err);
-    history.push("/login");
+  async (err) => {
+    console.log(err.response.data);
+
+    switch (err.response.data.name) {
+      case "TokenExpiredError":
+        const refreshToken = localStorage.getItem("refresh_token");
+
+        const newAccessToken = await axios.post("/auth/refresh_token", {
+          refresh_token: refreshToken,
+        });
+
+        console.log(newAccessToken.data.access_token);
+
+        localStorage.setItem("token", newAccessToken.data.access_token);
+        history.go("/");
+        break;
+      default:
+        break;
+    }
+
     return Promise.reject(err);
   }
 );
